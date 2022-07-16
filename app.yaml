@@ -1,0 +1,8 @@
+runtime: nodejs16
+
+
+
+manual_scaling:
+  instances : 1
+  cpu: 1 
+  disk_size_gb: 10
