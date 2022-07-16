@@ -10,7 +10,7 @@ export class CatalogService {
     return new Product({
       name: 'Product 1',
       reference,
-      category: 'Category 1',
+      category: 'Category 2',
       price: '100',
     });
   }
