@@ -1,13 +1,10 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('product')
+@Entity('products')
 export class Product {
-  @PrimaryColumn() public name: string;
-  @PrimaryColumn() public reference: number;
-  @PrimaryColumn() public category: string;
+  @PrimaryGeneratedColumn('increment') public id: number;
+  @Column() public name: string;
+  @Column() public reference: number;
+  @Column() public category: string;
   @Column() public price: string;
-
-  constructor(partial: Partial<Product>) {
-    Object.assign(this, partial);
-  }
 }
