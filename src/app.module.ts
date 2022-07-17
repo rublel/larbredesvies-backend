@@ -4,6 +4,7 @@ import { CatalogModule } from './api/Catalog/catalog.module';
 import { CustomerModule } from './api/Customers/customer.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ImportModule } from './import/importer.module';
 import { Customer } from './models/customer.entity';
 import { Product } from './models/product.entity';
 
@@ -21,6 +22,7 @@ import { Product } from './models/product.entity';
     }),
     CatalogModule,
     CustomerModule,
+    ImportModule,
   ],
   controllers: [AppController],
   providers: [AppService],
