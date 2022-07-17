@@ -39,6 +39,12 @@ export class CustomerService {
     };
   }
 
+  public async deleteCustomer(id: number): Promise<any> {
+    return await BackendFormatter.logger(
+      this.customerRepository.delete({ id }),
+    );
+  }
+
   public async generatePassword(): Promise<string> {
     const saltOrRounds = 10,
       password = 'random_password',
