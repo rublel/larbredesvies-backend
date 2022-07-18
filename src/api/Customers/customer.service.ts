@@ -44,7 +44,7 @@ export class CustomerService {
     );
   }
 
-  private async checkIfExist(email: string): Promise<any> {
+  public async checkIfExist(email: string): Promise<any> {
     const response = await this.customerRepository.findBy({ email });
     if (response.length > 0) {
       this.log.error(`Customer with email ${email} already exist`);
