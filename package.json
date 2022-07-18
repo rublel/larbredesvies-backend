@@ -28,7 +28,6 @@
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.4.7",
     "@nestjs/typeorm": "^9.0.0",
-    "bcrypt": "^5.0.1",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "reflect-metadata": "^0.1.13",

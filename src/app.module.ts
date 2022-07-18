@@ -11,11 +11,11 @@ import { Product } from './models/product.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'database-1.c9w3i7zlwzyt.eu-central-1.rds.amazonaws.com',
+      host: '34.78.226.248',
       port: 3306,
-      username: 'admin',
-      password: 'tS2gFy26Br5U',
-      database: '-',
+      username: 'webapp',
+      password: '"{X}[+q2i<$]o3#|',
+      database: 'larbredesvies',
       entities: [Product, Customer],
       synchronize: true,
     }),
