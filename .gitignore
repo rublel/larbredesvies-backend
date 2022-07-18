@@ -2,7 +2,7 @@
 /dist
 /node_modules
 /.DS_Store
-
+/Dockerfile
 # Logs
 logs
 *.log
