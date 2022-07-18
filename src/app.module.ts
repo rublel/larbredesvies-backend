@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CatalogModule } from './api/Catalog/catalog.module';
+import { CustomerModule } from './api/Customers/customer.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Customer } from './models/customer.entity';
 import { Product } from './models/product.entity';
 
 @Module({
@@ -14,10 +16,11 @@ import { Product } from './models/product.entity';
       username: 'admin',
       password: '(UM_YkQ-RA._@z{B',
       database: 'larbredesvies',
-      entities: [],
+      entities: [Product, Customer],
       synchronize: true,
     }),
     CatalogModule,
+    CustomerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
