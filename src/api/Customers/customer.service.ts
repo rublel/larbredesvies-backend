@@ -23,7 +23,6 @@ export class CustomerService {
   public async addCustomer(customer: Customer): Promise<any> {
     const checkIfExist = await this.checkIfExist(customer.email);
     if (!checkIfExist) {
-      customer.password = await this.generatePassword();
       return await BackendFormatter.logger(
         this.customerRepository.save(customer),
       );
@@ -39,16 +38,13 @@ export class CustomerService {
     };
   }
 
-  public async generatePassword(): Promise<string> {
-    const saltOrRounds = 10,
-      password = 'random_password',
-      hash = await bcrypt.hash(password, saltOrRounds);
-    //how to compare the received pass by user with the hash
-    //const isMatch = await bcrypt.compare(password, hash);
-    return hash;
+  public async deleteCustomer(id: number): Promise<any> {
+    return await BackendFormatter.logger(
+      this.customerRepository.delete({ id }),
+    );
   }
 
-  private async checkIfExist(email: string): Promise<any> {
+  public async checkIfExist(email: string): Promise<any> {
     const response = await this.customerRepository.findBy({ email });
     if (response.length > 0) {
       this.log.error(`Customer with email ${email} already exist`);
