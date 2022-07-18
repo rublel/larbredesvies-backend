@@ -10,8 +10,7 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "gcp-build": "npm run build",
-    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
