@@ -14,7 +14,7 @@ import { Product } from './models/product.entity';
       host: '34.78.226.248',
       port: 3306,
       username: 'backend',
-      password: 'i}RK]2TgpUTVfp2',
+      password: 'i}RK]2TgpUTVfp2.',
       database: 'larbredesvies',
       entities: [Product, Customer],
       synchronize: true,
