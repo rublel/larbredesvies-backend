@@ -5,11 +5,8 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
-  "main": "dist/main.js",
-  "engines": {
-    "node": ">=16.0.0"
-  },
   "scripts": {
+    "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
