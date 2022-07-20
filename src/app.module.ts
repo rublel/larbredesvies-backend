@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Customer } from './models/customer.entity';
 import { Product } from './models/product.entity';
+import { Order } from './models/purchase.entity';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { Product } from './models/product.entity';
       username: 'admin',
       password: 'bOMwVJ7kVNDg3jjl',
       database: 'webapp',
-      entities: [Product, Customer],
+      entities: [Product, Customer, Order],
       synchronize: true,
     }),
     CatalogModule,

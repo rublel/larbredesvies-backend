@@ -21,9 +21,21 @@ export class CustomerController {
     return await FrontEndFormatter.format({ records: response });
   }
 
+  @Get('purchase')
+  async getCustomerPurchase(@Query('id') id: number): Promise<any> {
+    const response = await this.customerService.getCustomerOrders(id);
+    return await FrontEndFormatter.format({ records: response });
+  }
+
   @Post()
   async addCustomer(@Body() customerData: Customer): Promise<any> {
     const response = await this.customerService.addCustomer(customerData);
+    return await FrontEndFormatter.format({ records: response });
+  }
+
+  @Post('order')
+  async addPurchase(@Body() purchaseData: any): Promise<any> {
+    const response = await this.customerService.addOrder(purchaseData);
     return await FrontEndFormatter.format({ records: response });
   }
 
