@@ -74,7 +74,7 @@ export class CustomerService extends CustomersAction {
       newOrder.date = new Date().toISOString();
       await this.orderRepository.save(newOrder);
     }
-    return orderData;
+    return await BackendFormatter.logger(orderData);
   }
 
   public async updateCustomer(customer: Customer): Promise<any> {
