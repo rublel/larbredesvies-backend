@@ -19,6 +19,10 @@ export class CustomerService extends CustomersAction {
   @InjectRepository(Order)
   private readonly orderRepository: Repository<Order>;
 
+  public async getCustomers(): Promise<any> {
+    return await BackendFormatter.logger(this.customerRepository.find());
+  }
+
   public async getCustomer(id: number): Promise<any> {
     const checker = await BackendFormatter.logger(
       this.customerRepository.findBy({ id }),

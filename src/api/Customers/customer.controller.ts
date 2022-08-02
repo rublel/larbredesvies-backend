@@ -15,6 +15,12 @@ import { CustomerService } from './customer.service';
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
+  @Get('all')
+  async getCustomers(): Promise<any> {
+    const response = await this.customerService.getCustomers();
+    return await FrontEndFormatter.format({ records: response });
+  }
+
   @Get()
   async getCustomer(@Query('id') id: number): Promise<any> {
     const response = await this.customerService.getCustomer(id);

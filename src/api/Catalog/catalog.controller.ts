@@ -16,6 +16,12 @@ import { CatalogService } from './catalog.service';
 export class CatalogController {
   constructor(private readonly catalogService: CatalogService) {}
 
+  @Get('all')
+  async getAllProducts(): Promise<Response> {
+    const response = await this.catalogService.getAllProducts();
+    return await FrontEndFormatter.format({ records: response });
+  }
+
   @Get('products')
   async getProducts(): Promise<Response> {
     const response = await this.catalogService.getProducts();

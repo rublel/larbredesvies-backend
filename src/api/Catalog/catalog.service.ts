@@ -11,6 +11,10 @@ export class CatalogService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
+  public getAllProducts(): Promise<any> {
+    return BackendFormatter.logger(this.productRepository.find());
+  }
+
   public async getProducts(): Promise<any> {
     return await BackendFormatter.logger(this.productRepository.find());
   }
