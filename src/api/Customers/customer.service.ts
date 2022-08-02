@@ -6,6 +6,7 @@ import { Customer } from 'src/models/customer.entity';
 import { Logger } from '@nestjs/common';
 import { CustomersAction } from './customers.action';
 import { Order } from 'src/models/purchase.entity';
+import { validate } from 'email-validator';
 
 @Injectable()
 export class CustomerService extends CustomersAction {
@@ -39,17 +40,29 @@ export class CustomerService extends CustomersAction {
   }
 
   public async addCustomer(customer: Customer): Promise<any> {
-    const checker = await this.checkIfExist(customer.email);
-    let response = {};
-    !checker?.exist
-      ? (response = await BackendFormatter.logger(
-          this.customerRepository.save(customer),
-        ))
-      : ((response = {
-          error: 'Customer with this email already exist',
-        }),
-        this.logger.error('Customer with this email already exist'));
-    return response;
+    if (customer.email && customer.email.length > 0) {
+      const checker = await this.checkIfExist(customer.email);
+      if (!checker?.exist) {
+        if (validate(customer.email)) {
+          return await BackendFormatter.logger(
+            this.customerRepository.save(customer),
+          );
+        } else {
+          return {
+            error: `L'email ${customer.email} n'est pas valide !`,
+          };
+        }
+      } else {
+        return {
+          exist: false,
+          error: `L'email ${customer.email} est déjà utilisé !`,
+        };
+      }
+    } else {
+      return {
+        error: `Adresse email obligatoire !`,
+      };
+    }
   }
 
   public async getCustomerOrders(id: number): Promise<any> {
