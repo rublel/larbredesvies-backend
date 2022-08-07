@@ -28,12 +28,6 @@ export class CustomerController {
     return await FrontEndFormatter.format({ records: response });
   }
 
-  @Get('purchase')
-  async getCustomerPurchase(@Query('id') id: number): Promise<any> {
-    const response = await this.customerService.getCustomerOrders(id);
-    return await FrontEndFormatter.format({ records: response });
-  }
-
   @Post('search')
   async searchCustomer(
     @Body() customerData: { queryString: string; queryFilters: {} },
