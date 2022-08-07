@@ -8,6 +8,7 @@ export class Order {
   @Column() public product_id: number;
   @Column() public quantity: number;
   @Column() public price: number;
-  @Column({ nullable: true }) public line: number;
+  @Column() public line: number;
   @Column() public date: String;
+  @Column() public status: string;
 }

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   Query,
@@ -16,9 +17,9 @@ export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @Get('all')
-  async getCustomers(): Promise<any> {
-    const response = await this.customerService.getCustomers();
-    return await FrontEndFormatter.format({ records: response });
+  async getCustomers(@Query() query) {
+    const response = await this.customerService.getCustomers(query);
+    return FrontEndFormatter.format({ records: response });
   }
 
   @Get()
@@ -30,6 +31,14 @@ export class CustomerController {
   @Get('purchase')
   async getCustomerPurchase(@Query('id') id: number): Promise<any> {
     const response = await this.customerService.getCustomerOrders(id);
+    return await FrontEndFormatter.format({ records: response });
+  }
+
+  @Post('search')
+  async searchCustomer(
+    @Body() customerData: { queryString: string; queryFilters: {} },
+  ): Promise<any> {
+    const response = await this.customerService.searchCustomer(customerData);
     return await FrontEndFormatter.format({ records: response });
   }
 

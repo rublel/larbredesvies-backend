@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { BackendFormatter } from 'src/utils/Formatter/backEndFormatter';
 import { Customer } from 'src/models/customer.entity';
 import { Logger } from '@nestjs/common';
 import { CustomersAction } from './customers.action';
 import { Order } from 'src/models/purchase.entity';
 import { validate } from 'email-validator';
+import { log } from 'console';
 
 @Injectable()
 export class CustomerService extends CustomersAction {
@@ -20,8 +21,18 @@ export class CustomerService extends CustomersAction {
   @InjectRepository(Order)
   private readonly orderRepository: Repository<Order>;
 
-  public async getCustomers(): Promise<any> {
-    return await BackendFormatter.logger(this.customerRepository.find());
+  async getCustomers(query): Promise<{ data: Customer[]; count: number }> {
+    const take = query.take || 20;
+    const skip = query.skip || 0;
+    const [result, total] = await this.customerRepository.findAndCount({
+      order: { date_creation: 'DESC' },
+      take: take,
+      skip: skip,
+    });
+    return {
+      data: result,
+      count: total,
+    };
   }
 
   public async getCustomer(id: number): Promise<any> {
@@ -37,6 +48,33 @@ export class CustomerService extends CustomersAction {
         }),
         this.logger.error(`Customer with id ${id} does not exist`));
     return response;
+  }
+
+  async searchCustomer({
+    queryString,
+    queryFilters,
+  }: {
+    queryString: string;
+    queryFilters: { [key: string]: number };
+  }): Promise<{ data: Customer[] | Customer; count: number }> {
+    console.log({ queryString, queryFilters });
+
+    const take = queryFilters.take || 20;
+    const skip = queryFilters.skip || 0;
+    const [result, total] = await this.customerRepository.findAndCount({
+      where: [
+        { name: Like(`%${queryString}%`) },
+        { siret: Like(`%${queryString}%`) },
+        { email: Like(`%${queryString}%`) },
+      ],
+      order: { date_creation: 'DESC' },
+      take: take,
+      skip: skip,
+    });
+    return {
+      data: result,
+      count: total,
+    };
   }
 
   public async addCustomer(customer: Customer): Promise<any> {
@@ -66,15 +104,28 @@ export class CustomerService extends CustomersAction {
   }
 
   public async getCustomerOrders(id: number): Promise<any> {
-    return await BackendFormatter.logger(
+    const transactions = await BackendFormatter.logger(
       this.orderRepository.find({
         where: { customer_id: id },
-        relations: ['product'],
       }),
     );
+    const transactionsById = transactions.reduce((acc, cur) => {
+      if (!acc[cur.order_id]) {
+        acc[cur.order_id] = [];
+      }
+      acc[cur.order_id].push(cur);
+      return acc;
+    }, {});
+    return {
+      count: Object.keys(transactionsById).length,
+      ...transactionsById,
+    };
   }
 
   public async addOrder(orderData: any): Promise<any> {
+    if (!orderData.customer_id) {
+      return { error: 'Customer ID is required' };
+    }
     const maxId = await this.orderRepository.find({
       order: { id: 'DESC' },
     });
@@ -89,9 +140,25 @@ export class CustomerService extends CustomersAction {
       newOrder.price = orderData.products[i].price;
       newOrder.line = i + 1;
       newOrder.date = new Date().toISOString();
+      newOrder.status = 'PENDING';
       await this.orderRepository.save(newOrder);
     }
-    return await BackendFormatter.logger(orderData);
+    const order: Order[] = await this.orderRepository.find({
+      where: { order_id: `CMD${newId}` },
+    });
+    this.logger.log(`Order with id ${newId} created`);
+    this.logger.log(order);
+    const transactionsById = order.reduce((acc, cur) => {
+      if (!acc[cur.order_id]) {
+        acc[cur.order_id] = [];
+      }
+      acc[cur.order_id].push(cur);
+      return acc;
+    }, {});
+    return {
+      products: transactionsById[`CMD${newId}`].length,
+      ...transactionsById,
+    };
   }
 
   public async updateCustomer(customer: Customer): Promise<any> {
