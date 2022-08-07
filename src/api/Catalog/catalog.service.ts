@@ -15,20 +15,20 @@ export class CatalogService {
     data: Product[];
     total: number;
     perPage: number;
-    pages: number;
   }> {
-    const take = query.take || 10;
-    const skip = query.skip || 0;
+    const page = query.page || 1;
+    const perPage = +query.perPage || 20;
+    const isAsc = query.isAsc || 'DESC';
+    const sortBy = query.sortBy || 'id';
     const [result, total] = await this.productRepository.findAndCount({
-      order: { category: 'ASC' },
-      take,
-      skip,
+      order: { [sortBy]: isAsc },
+      take: perPage,
+      skip: (+page - 1) * perPage,
     });
     return {
       data: result,
       total,
-      perPage: take,
-      pages: Math.ceil(total / take),
+      perPage,
     };
   }
 

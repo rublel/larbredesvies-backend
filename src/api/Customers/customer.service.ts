@@ -7,8 +7,6 @@ import { Logger } from '@nestjs/common';
 import { CustomersAction } from './customers.action';
 import { Order } from 'src/models/purchase.entity';
 import { validate } from 'email-validator';
-import { log } from 'console';
-
 @Injectable()
 export class CustomerService extends CustomersAction {
   constructor(
@@ -21,7 +19,7 @@ export class CustomerService extends CustomersAction {
   @InjectRepository(Order)
   private readonly orderRepository: Repository<Order>;
 
-  async getCustomers(query): Promise<{
+  async getCustomers(query: { [key: string]: string }): Promise<{
     data: Customer[];
     total: number;
     perPage: number;
@@ -33,7 +31,7 @@ export class CustomerService extends CustomersAction {
     const [result, total] = await this.customerRepository.findAndCount({
       order: { [sortBy]: isAsc },
       take: perPage,
-      skip: (page - 1) * perPage,
+      skip: (+page - 1) * perPage,
     });
     return {
       data: result,
