@@ -11,7 +11,12 @@ export class CatalogService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
-  async getAllProducts(query): Promise<{ data: Product[]; count: number }> {
+  async getAllProducts(query): Promise<{
+    data: Product[];
+    total: number;
+    perPage: number;
+    pages: number;
+  }> {
     const { take, skip } = query;
     const [result, total] = await this.productRepository.findAndCount({
       order: { category: 'ASC' },
@@ -20,7 +25,9 @@ export class CatalogService {
     });
     return {
       data: result,
-      count: total,
+      total,
+      perPage: take,
+      pages: Math.ceil(total / take),
     };
   }
 
