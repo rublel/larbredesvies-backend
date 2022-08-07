@@ -26,11 +26,10 @@ export class CustomerService extends CustomersAction {
     total: number;
     perPage: number;
   }> {
-    console.log(Object.keys(query));
     const page = query.page || 1;
-    const perPage = +query.perPage || 10;
-    const isAsc = query.isAsc || 'ASC';
-    const sortBy = query.sortBy || 'name';
+    const perPage = +query.perPage || 20;
+    const isAsc = query.isAsc || 'DESC';
+    const sortBy = query.sortBy || 'id';
     const [result, total] = await this.customerRepository.findAndCount({
       order: { [sortBy]: isAsc },
       take: perPage,
@@ -65,19 +64,19 @@ export class CustomerService extends CustomersAction {
     queryString: string;
     queryFilters: { [key: string]: number };
   }): Promise<{ data: Customer[] | Customer; count: number }> {
-    console.log({ queryString, queryFilters });
-
-    const take = queryFilters.take || 20;
-    const skip = queryFilters.skip || 0;
+    const page = queryFilters.page || 1;
+    const perPage = +queryFilters.perPage || 20;
+    const isAsc = queryFilters.isAsc || 'DESC';
+    const sortBy = queryFilters.sortBy || 'id';
     const [result, total] = await this.customerRepository.findAndCount({
       where: [
         { name: Like(`%${queryString}%`) },
         { siret: Like(`%${queryString}%`) },
         { email: Like(`%${queryString}%`) },
       ],
-      order: { date_creation: 'DESC' },
-      take: take,
-      skip: skip,
+      order: { [sortBy]: isAsc },
+      take: perPage,
+      skip: (page - 1) * perPage,
     });
     return {
       data: result,
