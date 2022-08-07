@@ -3,6 +3,7 @@ import { Product } from 'src/models/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BackendFormatter } from 'src/utils/Formatter/backEndFormatter';
+import { Response } from 'src/utils/Formatter/response.entity';
 
 @Injectable()
 export class CatalogService {
@@ -32,25 +33,21 @@ export class CatalogService {
     };
   }
 
-  public async getProducts(): Promise<any> {
-    return await BackendFormatter.logger(this.productRepository.find());
+  public getProduct(id: number): Promise<Product[] | Response<string>> {
+    return this.productRepository.findBy({ id });
   }
 
-  public async getProduct(id: number): Promise<any> {
-    return await BackendFormatter.logger(this.productRepository.findBy({ id }));
-  }
-
-  public async addProduct(product: Product): Promise<any> {
+  public async addProduct(product: Product): Promise<Response<Product>> {
     return await BackendFormatter.logger(this.productRepository.save(product));
   }
 
-  public async getCategory(category: string): Promise<any> {
+  public async getCategory(category: string): Promise<Response<Product>> {
     return await BackendFormatter.logger(
       this.productRepository.findBy({ category }),
     );
   }
 
-  public async getCategories(): Promise<any> {
+  public async getCategories(): Promise<Response<any>> {
     return await BackendFormatter.logger(
       this.productRepository
         .createQueryBuilder('products')
@@ -61,11 +58,11 @@ export class CatalogService {
     );
   }
 
-  public async deleteProduct(id: number): Promise<any> {
+  public async deleteProduct(id: number): Promise<Response<any>> {
     return await BackendFormatter.logger(this.productRepository.delete({ id }));
   }
 
-  public async updateProduct(product: Product): Promise<any> {
+  public async updateProduct(product: Product): Promise<Response<any>> {
     return {
       ...(await this.productRepository.update(product.id, product)),
       ...(await BackendFormatter.logger(this.getProduct(product.id))),

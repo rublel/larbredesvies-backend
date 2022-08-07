@@ -2,6 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from 'src/models/transaction.entity';
 import { Repository } from 'typeorm';
 import { Logger } from '@nestjs/common';
+import { Response } from 'src/utils/Formatter/response.entity';
 
 export class TransactionsService {
   constructor(
@@ -10,10 +11,10 @@ export class TransactionsService {
     private readonly logger: Logger,
   ) {}
 
-  public async addTransaction(orderData: any): Promise<any> {
+  public async addTransaction(
+    orderData: any,
+  ): Promise<{ [key: string]: string | number }> {
     if (!orderData.customer_id) {
-      console.log(orderData);
-
       return { error: 'Customer ID is required' };
     }
     const maxId = await this.transactionRepository.find({
@@ -55,15 +56,38 @@ export class TransactionsService {
       .catch((err) => err);
     this.logger.log(`Order with id ${newId} created`);
     this.logger.log(order);
-    const transactionsById = order.reduce((acc, cur) => {
-      if (!acc[cur.order_id]) {
-        acc[cur.order_id] = [];
-      }
-      acc[cur.order_id].push(cur);
-      return acc;
-    }, {});
+    const transactionsById: { [key: string]: Transaction[] } = order.reduce(
+      (acc, cur) => {
+        if (!acc[cur.order_id]) {
+          acc[cur.order_id] = [];
+        }
+        acc[cur.order_id].push(cur);
+        return acc;
+      },
+      {},
+    );
     return {
       products: transactionsById[newId].length,
+      ...transactionsById,
+    };
+  }
+
+  public async getCustomerTransactions(
+    id: number,
+  ): Promise<{ [key: string]: string | number }> {
+    const transactions = await this.transactionRepository.find({
+      where: { customer_id: id },
+    });
+    const transactionsById: { [key: string]: Transaction[] } =
+      transactions.reduce((acc, cur) => {
+        if (!acc[cur.order_id]) {
+          acc[cur.order_id] = [];
+        }
+        acc[cur.order_id].push(cur);
+        return acc;
+      }, {});
+    return {
+      count: Object.keys(transactionsById).length,
       ...transactionsById,
     };
   }

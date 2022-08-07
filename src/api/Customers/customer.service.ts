@@ -7,6 +7,7 @@ import { Logger } from '@nestjs/common';
 import { CustomersAction } from './customers.action';
 import { Transaction } from 'src/models/transaction.entity';
 import { validate } from 'email-validator';
+import { Response } from 'src/utils/Formatter/response.entity';
 @Injectable()
 export class CustomerService extends CustomersAction {
   constructor(
@@ -40,10 +41,8 @@ export class CustomerService extends CustomersAction {
     };
   }
 
-  public async getCustomer(id: number): Promise<any> {
-    const checker = await BackendFormatter.logger(
-      this.customerRepository.findBy({ id }),
-    );
+  public async getCustomer(id: number): Promise<Customer | Response<any>> {
+    const checker = await this.customerRepository.findBy({ id });
     let response = {};
     checker?.length
       ? (response = checker[0])
@@ -82,14 +81,14 @@ export class CustomerService extends CustomersAction {
     };
   }
 
-  public async addCustomer(customer: Customer): Promise<any> {
+  public async addCustomer(
+    customer: Customer,
+  ): Promise<Customer | Response<any>> {
     if (customer.email && customer.email.length > 0) {
       const checker = await this.checkIfExist(customer.email);
       if (!checker?.exist) {
         if (validate(customer.email)) {
-          return await BackendFormatter.logger(
-            this.customerRepository.save(customer),
-          );
+          return this.customerRepository.save(customer);
         } else {
           return {
             error: `L'email ${customer.email} n'est pas valide !`,
@@ -97,7 +96,6 @@ export class CustomerService extends CustomersAction {
         }
       } else {
         return {
-          exist: false,
           error: `L'email ${customer.email} est déjà utilisé !`,
         };
       }
@@ -108,26 +106,10 @@ export class CustomerService extends CustomersAction {
     }
   }
 
-  public async getCustomerOrders(id: number): Promise<any> {
-    const transactions = await BackendFormatter.logger(
-      this.orderRepository.find({
-        where: { customer_id: id },
-      }),
-    );
-    const transactionsById = transactions.reduce((acc, cur) => {
-      if (!acc[cur.order_id]) {
-        acc[cur.order_id] = [];
-      }
-      acc[cur.order_id].push(cur);
-      return acc;
-    }, {});
-    return {
-      count: Object.keys(transactionsById).length,
-      ...transactionsById,
-    };
-  }
-
-  public async updateCustomer(customer: Customer): Promise<any> {
+  public async updateCustomer(
+    customer: Customer,
+  ): Promise<Customer | Response<any>> {
+    const checker = await this.checkIfExist(customer.email);
     if (customer.password) {
       return {
         error: `Le mot de passe ne peut pas être modifié !`,
@@ -138,10 +120,9 @@ export class CustomerService extends CustomersAction {
         error: `L'email ${customer.email} n'est pas valide !`,
       };
     }
-    const currentEmail = await this.getCustomer(customer.id).then(
-      (res) => res.email,
-    );
-    const checker = await this.checkIfExist(customer.email);
+    const currentEmail = await this.getCustomer(customer.id).then((res) => {
+      if (res instanceof Customer) return res.email;
+    });
     if (
       !customer.email ||
       !checker ||
@@ -149,18 +130,15 @@ export class CustomerService extends CustomersAction {
     ) {
       customer.last_update = new Date();
       await this.customerRepository.update(customer.id, customer);
-      return BackendFormatter.logger(this.getCustomer(customer.id));
+      return this.getCustomer(customer.id);
     } else {
       return {
-        exist: true,
         error: `L'email ${customer.email} est déjà utilisé !`,
       };
     }
   }
 
-  public async deleteCustomer(id: number): Promise<any> {
-    return await BackendFormatter.logger(
-      this.customerRepository.delete({ id }),
-    );
+  public deleteCustomer(id: number): Promise<any> {
+    return this.customerRepository.delete({ id });
   }
 }

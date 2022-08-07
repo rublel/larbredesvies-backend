@@ -1,4 +1,5 @@
-export class Response {
-  public records: any;
-  public scroll_id?: string;
+export class Response<T> {
+  public records?: T[] | T;
+  public exist?: boolean;
+  public error?: string;
 }

@@ -1,15 +1,16 @@
 import { Response } from './response.entity';
 
-export default class FrontEndFormatter extends Response {
-  public static async format(object: Response): Promise<Response> {
-    const sdk = await this.adaptToSDK(object.records, object.scroll_id);
+export default class FrontEndFormatter extends Response<any> {
+  public static async format(object: Response<any>): Promise<Response<any>> {
+    const sdk = await this.adaptToSDK(object.records);
     return sdk;
   }
 
   private static async adaptToSDK(response: any, scroll_id: string = null) {
-    let responseSdk = { records: response };
+    let responseSdk = response?.error
+      ? { error: response.error, success: false }
+      : { records: response, success: true };
     if (Array.isArray(response)) responseSdk['totalSize'] = response.length;
-    if (!!scroll_id) responseSdk['scroll_id'] = scroll_id;
     return responseSdk;
   }
 }

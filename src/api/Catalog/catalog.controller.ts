@@ -17,43 +17,47 @@ export class CatalogController {
   constructor(private readonly catalogService: CatalogService) {}
 
   @Get('all')
-  async getAllProducts(@Query() query): Promise<Response> {
+  async getAllProducts(@Query() query): Promise<Response<Product[]>> {
     const response = await this.catalogService.getAllProducts(query);
     return await FrontEndFormatter.format({ records: response });
   }
 
   @Get('product')
-  async getProduct(@Query('id') id: number): Promise<Response> {
+  async getProduct(@Query('id') id: number): Promise<Response<Product>> {
     const response = await this.catalogService.getProduct(id);
     return await FrontEndFormatter.format({ records: response });
   }
 
   @Get('category')
-  async getCategory(@Query('category') category: string): Promise<Response> {
+  async getCategory(
+    @Query('category') category: string,
+  ): Promise<Response<any>> {
     const response = await this.catalogService.getCategory(category);
     return await FrontEndFormatter.format({ records: response });
   }
 
   @Get('categories')
-  async getCategories(): Promise<Response> {
+  async getCategories(): Promise<Response<any>> {
     const response = await this.catalogService.getCategories();
     return await FrontEndFormatter.format({ records: response });
   }
 
   @Post('product')
-  async addProduct(@Body() productData: Product): Promise<Response> {
+  async addProduct(@Body() productData: Product): Promise<Response<Product>> {
     const response = await this.catalogService.addProduct(productData);
     return await FrontEndFormatter.format({ records: response });
   }
 
   @Put('product')
-  async updateProduct(@Body() productData: Product): Promise<Response> {
+  async updateProduct(
+    @Body() productData: Product,
+  ): Promise<Response<Product>> {
     const response = await this.catalogService.updateProduct(productData);
     return await FrontEndFormatter.format({ records: response });
   }
 
   @Delete('product')
-  async deleteProduct(@Query('id') id: number): Promise<Response> {
+  async deleteProduct(@Query('id') id: number): Promise<Response<Product>> {
     const response = await this.catalogService.deleteProduct(id);
     return await FrontEndFormatter.format({ records: response });
   }
