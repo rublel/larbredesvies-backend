@@ -128,12 +128,27 @@ export class CustomerService extends CustomersAction {
   }
 
   public async updateCustomer(customer: Customer): Promise<any> {
-    return {
-      ...(await this.customerRepository.update(customer.id, customer)),
-      ...{
-        response: await BackendFormatter.logger(this.getCustomer(customer.id)),
-      },
-    };
+    if (customer.email && !validate(customer.email)) {
+      return {
+        error: `L'email ${customer.email} n'est pas valide !`,
+      };
+    }
+    const _email = await this.getCustomer(customer.id).then((res) => res.email);
+    const checker = await this.checkIfExist(customer.email);
+    if (
+      !customer.email ||
+      (!checker && validate(customer.email)) ||
+      (checker && _email === customer.email && validate(customer.email))
+    ) {
+      customer.last_update = new Date();
+      await this.customerRepository.update(customer.id, customer);
+      return BackendFormatter.logger(this.getCustomer(customer.id));
+    } else {
+      return {
+        exist: false,
+        error: `L'email ${customer.email} est déjà utilisé !`,
+      };
+    }
   }
 
   public async deleteCustomer(id: number): Promise<any> {

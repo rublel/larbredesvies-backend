@@ -14,5 +14,6 @@ export class Customer {
   @Column({ nullable: true }) public cp: string;
   @Column() public solde_init: string;
   @Column() public solde_actuel: string;
-  @Column({ nullable: false }) public date_creation: string;
+  @Column({ nullable: false }) public date_creation: Date;
+  @Column({ nullable: true }) public last_update: Date;
 }
