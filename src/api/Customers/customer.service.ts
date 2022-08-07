@@ -21,17 +21,24 @@ export class CustomerService extends CustomersAction {
   @InjectRepository(Order)
   private readonly orderRepository: Repository<Order>;
 
-  async getCustomers(query): Promise<{ data: Customer[]; count: number }> {
-    const take = query.take || 20;
+  async getCustomers(query): Promise<{
+    data: Customer[];
+    total: number;
+    perPage: number;
+    pages: number;
+  }> {
+    const take = query.take || 10;
     const skip = query.skip || 0;
     const [result, total] = await this.customerRepository.findAndCount({
-      order: { date_creation: 'DESC' },
-      take: take,
-      skip: skip,
+      order: { id: 'ASC' },
+      take,
+      skip,
     });
     return {
       data: result,
-      count: total,
+      total,
+      perPage: take,
+      pages: Math.ceil(total / take),
     };
   }
 

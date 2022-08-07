@@ -17,8 +17,8 @@ export class CatalogController {
   constructor(private readonly catalogService: CatalogService) {}
 
   @Get('all')
-  async getAllProducts(): Promise<Response> {
-    const response = await this.catalogService.getAllProducts();
+  async getAllProducts(@Query() query): Promise<Response> {
+    const response = await this.catalogService.getAllProducts(query);
     return await FrontEndFormatter.format({ records: response });
   }
 

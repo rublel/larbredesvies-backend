@@ -11,8 +11,17 @@ export class CatalogService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
-  public getAllProducts(): Promise<any> {
-    return BackendFormatter.logger(this.productRepository.find());
+  async getAllProducts(query): Promise<{ data: Product[]; count: number }> {
+    const { take, skip } = query;
+    const [result, total] = await this.productRepository.findAndCount({
+      order: { category: 'ASC' },
+      take,
+      skip,
+    });
+    return {
+      data: result,
+      count: total,
+    };
   }
 
   public async getProducts(): Promise<any> {
