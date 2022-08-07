@@ -48,12 +48,6 @@ export class CustomerController {
     return await FrontEndFormatter.format({ records: response });
   }
 
-  @Post('order')
-  async addPurchase(@Body() purchaseData: any): Promise<any> {
-    const response = await this.customerService.addOrder(purchaseData);
-    return await FrontEndFormatter.format({ records: response });
-  }
-
   @Put()
   async updateCustomer(@Body() customerData: Customer): Promise<any> {
     const response = await this.customerService.updateCustomer(customerData);

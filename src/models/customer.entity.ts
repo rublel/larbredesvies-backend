@@ -5,6 +5,7 @@ import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 export class Customer {
   @PrimaryGeneratedColumn('increment') public id: number;
   @Column({ nullable: false }) public name: string;
+  @Column({ nullable: true }) public contact: string;
   @Column({ nullable: true }) public siret: string;
   @Column({ nullable: true }) public tel: string;
   @Column({ unique: false, nullable: false }) public email: string;

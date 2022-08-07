@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CatalogModule } from './api/Catalog/catalog.module';
 import { CustomerModule } from './api/Customers/customer.module';
+import { TransactionModule } from './api/Transactions/transaction.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Customer } from './models/customer.entity';
 import { Product } from './models/product.entity';
-import { Order } from './models/purchase.entity';
+import { Transaction } from './models/transaction.entity';
 
 @Module({
   imports: [
@@ -17,11 +18,12 @@ import { Order } from './models/purchase.entity';
       username: 'admin',
       password: 'bOMwVJ7kVNDg3jjl',
       database: 'webapp',
-      entities: [Product, Customer, Order],
+      entities: [Product, Customer, Transaction],
       synchronize: true,
     }),
     CatalogModule,
     CustomerModule,
+    TransactionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

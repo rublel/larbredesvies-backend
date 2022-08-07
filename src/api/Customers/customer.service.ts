@@ -5,7 +5,7 @@ import { BackendFormatter } from 'src/utils/Formatter/backEndFormatter';
 import { Customer } from 'src/models/customer.entity';
 import { Logger } from '@nestjs/common';
 import { CustomersAction } from './customers.action';
-import { Order } from 'src/models/purchase.entity';
+import { Transaction } from 'src/models/transaction.entity';
 import { validate } from 'email-validator';
 @Injectable()
 export class CustomerService extends CustomersAction {
@@ -16,8 +16,8 @@ export class CustomerService extends CustomersAction {
   ) {
     super(customerRepository, logger);
   }
-  @InjectRepository(Order)
-  private readonly orderRepository: Repository<Order>;
+  @InjectRepository(Transaction)
+  private readonly orderRepository: Repository<Transaction>;
 
   async getCustomers(query: { [key: string]: string }): Promise<{
     data: Customer[];
@@ -123,45 +123,6 @@ export class CustomerService extends CustomersAction {
     }, {});
     return {
       count: Object.keys(transactionsById).length,
-      ...transactionsById,
-    };
-  }
-
-  public async addOrder(orderData: any): Promise<any> {
-    if (!orderData.customer_id) {
-      return { error: 'Customer ID is required' };
-    }
-    const maxId = await this.orderRepository.find({
-      order: { id: 'DESC' },
-    });
-    const newId = +maxId[0]?.order_id?.slice(3) + 1 ?? 1;
-    for (let i = 0; i < orderData.products.length; i++) {
-      const newOrder = new Order();
-      newOrder.order_id = `CMD${newId}`;
-      newOrder.customer_id = orderData.customer_id;
-      newOrder.product_id = orderData.products[i].product_id;
-      newOrder.quantity = orderData.products[i].quantity;
-      //! Check the price in the database and use it
-      newOrder.price = orderData.products[i].price;
-      newOrder.line = i + 1;
-      newOrder.date = new Date().toISOString();
-      newOrder.status = 'PENDING';
-      await this.orderRepository.save(newOrder);
-    }
-    const order: Order[] = await this.orderRepository.find({
-      where: { order_id: `CMD${newId}` },
-    });
-    this.logger.log(`Order with id ${newId} created`);
-    this.logger.log(order);
-    const transactionsById = order.reduce((acc, cur) => {
-      if (!acc[cur.order_id]) {
-        acc[cur.order_id] = [];
-      }
-      acc[cur.order_id].push(cur);
-      return acc;
-    }, {});
-    return {
-      products: transactionsById[`CMD${newId}`].length,
       ...transactionsById,
     };
   }

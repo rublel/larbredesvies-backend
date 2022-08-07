@@ -22,12 +22,6 @@ export class CatalogController {
     return await FrontEndFormatter.format({ records: response });
   }
 
-  @Get('products')
-  async getProducts(): Promise<Response> {
-    const response = await this.catalogService.getProducts();
-    return await FrontEndFormatter.format({ records: response });
-  }
-
   @Get('product')
   async getProduct(@Query('id') id: number): Promise<Response> {
     const response = await this.catalogService.getProduct(id);
