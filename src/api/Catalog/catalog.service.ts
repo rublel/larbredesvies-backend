@@ -17,7 +17,8 @@ export class CatalogService {
     perPage: number;
     pages: number;
   }> {
-    const { take, skip } = query;
+    const take = query.take || 10;
+    const skip = query.skip || 0;
     const [result, total] = await this.productRepository.findAndCount({
       order: { category: 'ASC' },
       take,
