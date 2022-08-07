@@ -25,20 +25,21 @@ export class CustomerService extends CustomersAction {
     data: Customer[];
     total: number;
     perPage: number;
-    pages: number;
   }> {
-    const take = query.take || 10;
-    const skip = query.skip || 0;
+    console.log(Object.keys(query));
+    const page = query.page || 1;
+    const perPage = +query.perPage || 10;
+    const isAsc = query.isAsc || 'ASC';
+    const sortBy = query.sortBy || 'name';
     const [result, total] = await this.customerRepository.findAndCount({
-      order: { id: 'ASC' },
-      take,
-      skip,
+      order: { [sortBy]: isAsc },
+      take: perPage,
+      skip: (page - 1) * perPage,
     });
     return {
       data: result,
       total,
-      perPage: take,
-      pages: Math.ceil(total / take),
+      perPage,
     };
   }
 
