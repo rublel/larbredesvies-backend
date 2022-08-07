@@ -33,12 +33,23 @@ export class CatalogService {
     };
   }
 
-  public getProduct(id: number): Promise<Product[] | Response<string>> {
-    return this.productRepository.findBy({ id });
+  public async getProduct(id: number): Promise<Product[] | Response<any>> {
+    const product = await this.productRepository.findBy({ id });
+    return product.length
+      ? product
+      : {
+          error: `Le produit ${id} n'existe pas`,
+        };
   }
 
   public async addProduct(product: Product): Promise<Response<Product>> {
-    return await BackendFormatter.logger(this.productRepository.save(product));
+    if (!product.price) {
+      return {
+        error: 'Le prix est obligatoire',
+      };
+    } else {
+      return BackendFormatter.logger(this.productRepository.save(product));
+    }
   }
 
   public async getCategory(category: string): Promise<Response<Product>> {
