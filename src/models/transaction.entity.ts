@@ -9,7 +9,12 @@ export class Transaction {
   @Column() public quantity: number;
   @Column() public total: number;
   @Column() public price: number;
-  @Column() public line: number;
-  @Column() public date: String;
-  @Column() public status: string;
+  @Column() public line: number = 1;
+  @Column() public date: string = new Date().toISOString();
+  @Column() public status: string = `PENDING`;
+  @Column() public type: string = `DETAILED_ORDER`;
+
+  constructor(partial: Partial<Transaction>) {
+    Object.assign(this, partial);
+  }
 }
