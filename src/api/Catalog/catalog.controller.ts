@@ -7,6 +7,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { Category } from 'src/models/category.entity';
 import { Product } from 'src/models/product.entity';
 import FrontEndFormatter from 'src/utils/Formatter/frontEndFormatter';
 import { Response } from 'src/utils/Formatter/response.entity';
@@ -30,7 +31,7 @@ export class CatalogController {
 
   @Get('category')
   async getCategory(
-    @Query('category') category: string,
+    @Query('category') category: keyof Category,
   ): Promise<Response<any>> {
     const response = await this.catalogService.getCategory(category);
     return await FrontEndFormatter.format({ records: response });
@@ -39,6 +40,14 @@ export class CatalogController {
   @Get('categories')
   async getCategories(): Promise<Response<any>> {
     const response = await this.catalogService.getCategories();
+    return await FrontEndFormatter.format({ records: response });
+  }
+
+  @Post('category')
+  async addCategory(
+    @Body() categoryData: Category,
+  ): Promise<Response<Category>> {
+    const response = await this.catalogService.addCategory(categoryData);
     return await FrontEndFormatter.format({ records: response });
   }
 

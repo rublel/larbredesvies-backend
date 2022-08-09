@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Product } from 'src/models/product.entity';
+import { Category } from 'src/models/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BackendFormatter } from 'src/utils/Formatter/backEndFormatter';
@@ -52,7 +53,18 @@ export class CatalogService {
     }
   }
 
-  public async getCategory(category: string): Promise<Response<Product>> {
+  public async addCategory(
+    category: Category,
+  ): Promise<Response<Category> | {}> {
+    const exist = await this.productRepository.findBy(category);
+    return exist?.length
+      ? { error: `La catégorie ${category} existe déjà` }
+      : await this.productRepository.save(category);
+  }
+
+  public async getCategory(
+    category: keyof Category,
+  ): Promise<Response<Product>> {
     return await BackendFormatter.logger(
       this.productRepository.findBy({ category }),
     );
