@@ -48,6 +48,10 @@ export class CatalogService {
       return {
         error: 'Le prix est obligatoire',
       };
+    } else if (!product.category) {
+      return {
+        error: 'La catégorie est obligatoire',
+      };
     } else {
       return BackendFormatter.logger(this.productRepository.save(product));
     }
