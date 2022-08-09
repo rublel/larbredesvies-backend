@@ -13,7 +13,7 @@ import { Transaction } from './models/transaction.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'database-1.caotopuibznb.us-east-1.rds.amazonaws.com',
+      host: 'webapp.ckys6iuhgaoz.eu-west-1.rds.amazonaws.com',
       port: 3306,
       username: 'admin',
       password: 'bOMwVJ7kVNDg3jjl',
