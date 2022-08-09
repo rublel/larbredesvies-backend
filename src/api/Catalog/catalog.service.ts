@@ -58,7 +58,7 @@ export class CatalogService {
   ): Promise<Response<Category> | {}> {
     const exist = await this.productRepository.findBy(category);
     return exist?.length
-      ? { error: `La catégorie ${category} existe déjà` }
+      ? { error: `La catégorie ${category.name} existe déjà` }
       : await this.productRepository.save(category);
   }
 
