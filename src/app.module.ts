@@ -5,6 +5,7 @@ import { CustomerModule } from './api/Customers/customer.module';
 import { TransactionModule } from './api/Transactions/transaction.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Category } from './models/category.entity';
 import { Customer } from './models/customer.entity';
 import { Product } from './models/product.entity';
 import { Transaction } from './models/transaction.entity';
@@ -18,7 +19,7 @@ import { Transaction } from './models/transaction.entity';
       username: 'admin',
       password: 'bOMwVJ7kVNDg3jjl',
       database: 'webapp',
-      entities: [Product, Customer, Transaction],
+      entities: [Product, Customer, Transaction, Category],
       synchronize: true,
     }),
     CatalogModule,

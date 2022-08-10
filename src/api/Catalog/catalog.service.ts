@@ -11,6 +11,8 @@ export class CatalogService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
   ) {}
 
   async getAllProducts(query): Promise<{
@@ -52,7 +54,16 @@ export class CatalogService {
       return {
         error: 'La catégorie est obligatoire',
       };
+    } else if (!product.name) {
+      return {
+        error: 'Le nom est obligatoire',
+      };
+    } else if (!product.reference) {
+      return {
+        error: 'La référence est obligatoire',
+      };
     } else {
+      const exist = await this.productRepository.findBy(product);
       return BackendFormatter.logger(this.productRepository.save(product));
     }
   }
@@ -60,18 +71,14 @@ export class CatalogService {
   public async addCategory(
     category: Category,
   ): Promise<Response<Category> | {}> {
-    const exist = await this.productRepository.findBy(category);
+    const exist = await this.categoryRepository.findBy(category);
     return exist?.length
       ? { error: `La catégorie ${category.name} existe déjà` }
-      : await this.productRepository.save(category);
+      : await this.categoryRepository.save(category);
   }
 
-  public async getCategory(
-    category: keyof Category,
-  ): Promise<Response<Product>> {
-    return await BackendFormatter.logger(
-      this.productRepository.findBy({ category }),
-    );
+  public async getCategory(id: Category): Promise<Response<Category>> {
+    return await BackendFormatter.logger(this.categoryRepository.findBy(id));
   }
 
   public async getCategories(): Promise<Response<any>> {

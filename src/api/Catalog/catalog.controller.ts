@@ -30,10 +30,8 @@ export class CatalogController {
   }
 
   @Get('category')
-  async getCategory(
-    @Query('category') category: keyof Category,
-  ): Promise<Response<any>> {
-    const response = await this.catalogService.getCategory(category);
+  async getCategory(@Query('id') id: Category): Promise<Response<any>> {
+    const response = await this.catalogService.getCategory(id);
     return await FrontEndFormatter.format({ records: response });
   }
 
