@@ -46,22 +46,13 @@ export class CatalogService {
   }
 
   public async addProduct(product: Product): Promise<Response<Product>> {
-    if (!product.price) {
-      return {
-        error: 'Le prix est obligatoire',
-      };
-    } else if (!product.category) {
-      return {
-        error: 'La catégorie est obligatoire',
-      };
-    } else if (!product.name) {
-      return {
-        error: 'Le nom est obligatoire',
-      };
-    } else if (!product.reference) {
-      return {
-        error: 'La référence est obligatoire',
-      };
+    if (
+      !product.price ||
+      !product.name ||
+      !product.reference ||
+      !product.category
+    ) {
+      return { error: 'Tout les champs sont obligatoires' };
     } else {
       const exist = await this.productRepository.findBy(product);
       return BackendFormatter.logger(this.productRepository.save(product));
