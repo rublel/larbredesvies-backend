@@ -97,6 +97,11 @@ export class CustomerService extends CustomersAction {
   public async updateCustomer(
     customer: Customer,
   ): Promise<Customer | Response<any>> {
+    const exist = await this.customerRepository.find({
+      where: { id: customer.id },
+    });
+    if (!exist?.length)
+      return { error: `Le client ${customer.id} n'existe pas` };
     const checker = await this.checkIfExist(customer.email);
     if (customer.password) {
       return {
