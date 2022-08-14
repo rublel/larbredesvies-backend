@@ -85,11 +85,12 @@ export class CatalogService {
         '(SELECT COUNT(*) FROM products WHERE products.category = category.id) AS count',
       )
       .getRawMany();
-    const response = {
-      categories,
-      total: categories.reduce((acc, cur) => acc + +cur.count, 0),
-    };
-    return BackendFormatter.logger(response);
+    categories.push({
+      id: 'all',
+      name: 'Toutes',
+      count: categories.reduce((acc, cur) => acc + +cur.count, 0),
+    });
+    return BackendFormatter.logger(categories);
   }
 
   public async deleteProduct(id: number): Promise<Response<any>> {
