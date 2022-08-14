@@ -77,16 +77,19 @@ export class CatalogService {
       : { error: `La catégorie ${category} n'existe pas` };
   }
 
-  public async getCategories(): Promise<Response<any>> {
-    return await BackendFormatter.logger(
-      this.categoryRepository
-        .createQueryBuilder('category')
-        .select('*')
-        .addSelect(
-          '(SELECT COUNT(*) FROM products WHERE products.category = category.id) AS count',
-        )
-        .getRawMany(),
-    );
+  public async getCategories(): Promise<Response<any> | {}> {
+    const categories = await this.categoryRepository
+      .createQueryBuilder('category')
+      .select('*')
+      .addSelect(
+        '(SELECT COUNT(*) FROM products WHERE products.category = category.id) AS count',
+      )
+      .getRawMany();
+    const response = {
+      categories,
+      total: categories.reduce((acc, cur) => acc + +cur.count, 0),
+    };
+    return BackendFormatter.logger(response);
   }
 
   public async deleteProduct(id: number): Promise<Response<any>> {
