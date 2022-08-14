@@ -69,11 +69,12 @@ export class CatalogService {
   }
 
   public async getCategory(category: number): Promise<Response<Product[]>> {
-    return await BackendFormatter.logger(
-      this.productRepository.find({
-        where: { category: category },
-      }),
-    );
+    const exist = await this.categoryRepository.findBy({ id: category });
+    return exist?.length
+      ? await BackendFormatter.logger(
+          this.productRepository.find({ where: { category } }),
+        )
+      : { error: `La catégorie ${category} n'existe pas` };
   }
 
   public async getCategories(): Promise<Response<any>> {
@@ -95,17 +96,18 @@ export class CatalogService {
       : { error: `Le produit ${id} n'existe pas` };
   }
 
-  public async updateProduct(product: Product): Promise<Response<any>> {
+  public async updateProduct(product: Product): Promise<Response<{}> | {}> {
     const exist = await this.productRepository.findBy({ id: product.id });
     const existCategory = await this.categoryRepository.findBy({
       id: product.category,
     });
+
     return exist?.length
-      ? await BackendFormatter.logger(this.productRepository.save(product))
-      : {
-          error: existCategory?.length
-            ? `Le produit ${product.id} n'existe pas`
-            : `La catégorie ${product.category} n'existe pas`,
-        };
+      ? existCategory?.length
+        ? await this.productRepository.save(product)
+        : {
+            error: `La catégorie ${product.category} n'existe pas`,
+          }
+      : { error: `Le produit ${product.id} n'existe pas` };
   }
 }
