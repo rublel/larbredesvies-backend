@@ -77,7 +77,7 @@ export class CatalogService {
         .createQueryBuilder('category')
         .select('*')
         .addSelect(
-          '(SELECT COUNT(*) FROM products WHERE products.category = category.id) AS product_count',
+          '(SELECT COUNT(*) FROM products WHERE products.category = category.id) AS count',
         )
         .getRawMany(),
     );
