@@ -45,13 +45,18 @@ export class CatalogService {
         };
   }
 
-  public async addProduct(product: Product): Promise<Response<Product>> {
+  public async addProduct(product: Product): Promise<Response<Product> | {}> {
+    const existCategory = await this.categoryRepository.findBy({
+      id: product.category,
+    });
     return !product.price ||
       !product.name ||
       !product.reference ||
       !product.category
       ? { error: 'Tout les champs sont obligatoires' }
-      : BackendFormatter.logger(this.productRepository.save(product));
+      : existCategory?.length
+      ? await this.productRepository.save(product)
+      : { error: `La catégorie ${product.category} n'existe pas` };
   }
 
   public async addCategory(
