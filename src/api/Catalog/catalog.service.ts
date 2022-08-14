@@ -97,8 +97,15 @@ export class CatalogService {
 
   public async updateProduct(product: Product): Promise<Response<any>> {
     const exist = await this.productRepository.findBy({ id: product.id });
+    const existCategory = await this.categoryRepository.findBy({
+      id: product.category,
+    });
     return exist?.length
       ? await BackendFormatter.logger(this.productRepository.save(product))
-      : { error: `Le produit ${product.id} n'existe pas` };
+      : {
+          error: existCategory?.length
+            ? `Le produit ${product.id} n'existe pas`
+            : `La catégorie ${product.category} n'existe pas`,
+        };
   }
 }
