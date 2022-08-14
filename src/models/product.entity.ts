@@ -6,6 +6,6 @@ export class Product {
   @PrimaryGeneratedColumn('increment') public id: number;
   @Column() public name: string;
   @Column() public reference: number;
-  @Column() public category: string;
+  @Column() public category: number;
   @Column() public price: string;
 }

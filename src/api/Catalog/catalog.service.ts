@@ -46,17 +46,12 @@ export class CatalogService {
   }
 
   public async addProduct(product: Product): Promise<Response<Product>> {
-    if (
-      !product.price ||
+    return !product.price ||
       !product.name ||
       !product.reference ||
       !product.category
-    ) {
-      return { error: 'Tout les champs sont obligatoires' };
-    } else {
-      const exist = await this.productRepository.findBy(product);
-      return BackendFormatter.logger(this.productRepository.save(product));
-    }
+      ? { error: 'Tout les champs sont obligatoires' }
+      : BackendFormatter.logger(this.productRepository.save(product));
   }
 
   public async addCategory(
@@ -68,29 +63,37 @@ export class CatalogService {
       : await this.categoryRepository.save(category);
   }
 
-  public async getCategory(id: Category): Promise<Response<Category>> {
-    return await BackendFormatter.logger(this.categoryRepository.findBy(id));
+  public async getCategory(category: number): Promise<Response<Product[]>> {
+    return await BackendFormatter.logger(
+      this.productRepository.find({
+        where: { category: category },
+      }),
+    );
   }
 
   public async getCategories(): Promise<Response<any>> {
     return await BackendFormatter.logger(
-      this.productRepository
-        .createQueryBuilder('products')
-        .select('category', 'category')
-        .addSelect('COUNT(*)', 'count')
-        .groupBy('category')
+      this.categoryRepository
+        .createQueryBuilder('category')
+        .select('*')
+        .addSelect(
+          '(SELECT COUNT(*) FROM products WHERE products.category = category.id) AS product_count',
+        )
         .getRawMany(),
     );
   }
 
   public async deleteProduct(id: number): Promise<Response<any>> {
-    return await BackendFormatter.logger(this.productRepository.delete({ id }));
+    const exist = await this.productRepository.find({ where: { id } });
+    return exist?.length
+      ? await BackendFormatter.logger(this.productRepository.delete(id))
+      : { error: `Le produit ${id} n'existe pas` };
   }
 
   public async updateProduct(product: Product): Promise<Response<any>> {
-    return {
-      ...(await this.productRepository.update(product.id, product)),
-      ...(await BackendFormatter.logger(this.getProduct(product.id))),
-    };
+    const exist = await this.productRepository.findBy({ id: product.id });
+    return exist?.length
+      ? await BackendFormatter.logger(this.productRepository.save(product))
+      : { error: `Le produit ${product.id} n'existe pas` };
   }
 }

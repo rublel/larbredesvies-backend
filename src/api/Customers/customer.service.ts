@@ -84,26 +84,14 @@ export class CustomerService extends CustomersAction {
   public async addCustomer(
     customer: Customer,
   ): Promise<Customer | Response<any>> {
-    if (customer.email && customer.email.length > 0) {
-      const checker = await this.checkIfExist(customer.email);
-      if (!checker?.exist) {
-        if (validate(customer.email)) {
-          return this.customerRepository.save(customer);
-        } else {
-          return {
-            error: `L'email ${customer.email} n'est pas valide !`,
-          };
-        }
-      } else {
-        return {
-          error: `L'email ${customer.email} est déjà utilisé !`,
-        };
-      }
-    } else {
-      return {
-        error: `Adresse email obligatoire !`,
-      };
-    }
+    const checker = await this.checkIfExist(customer.email);
+    return customer.email && customer.email.length > 0
+      ? !checker?.exist
+        ? validate(customer.email)
+          ? this.customerRepository.save(customer)
+          : { error: `L'email ${customer.email} n'est pas valide !` }
+        : { error: `L'email ${customer.email} existe déjà !` }
+      : { error: `Adresse email obligatoire !` };
   }
 
   public async updateCustomer(
@@ -123,19 +111,15 @@ export class CustomerService extends CustomersAction {
     const currentEmail = await this.getCustomer(customer.id).then((res) => {
       if (res instanceof Customer) return res.email;
     });
-    if (
-      !customer.email ||
+    return !customer.email ||
       !checker ||
       (checker && currentEmail === customer.email)
-    ) {
-      customer.last_update = new Date();
-      await this.customerRepository.update(customer.id, customer);
-      return this.getCustomer(customer.id);
-    } else {
-      return {
-        error: `L'email ${customer.email} est déjà utilisé !`,
-      };
-    }
+      ? ((customer.last_update = new Date()),
+        await this.customerRepository.update(customer.id, customer),
+        this.getCustomer(customer.id))
+      : {
+          error: `L'email ${customer.email} est déjà utilisé !`,
+        };
   }
 
   public deleteCustomer(id: number): Promise<any> {
