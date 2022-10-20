@@ -9,7 +9,7 @@ import { Category } from './models/category.entity';
 import { Customer } from './models/customer.entity';
 import { Product } from './models/product.entity';
 import { Transaction } from './models/transaction.entity';
-
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -25,6 +25,7 @@ import { Transaction } from './models/transaction.entity';
     CatalogModule,
     CustomerModule,
     TransactionModule,
+    ConfigModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
