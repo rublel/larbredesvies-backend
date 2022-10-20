@@ -18,6 +18,7 @@ const category_entity_1 = require("./models/category.entity");
 const customer_entity_1 = require("./models/customer.entity");
 const product_entity_1 = require("./models/product.entity");
 const transaction_entity_1 = require("./models/transaction.entity");
+const config_1 = require("@nestjs/config");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -36,6 +37,7 @@ AppModule = __decorate([
             catalog_module_1.CatalogModule,
             customer_module_1.CustomerModule,
             transaction_module_1.TransactionModule,
+            config_1.ConfigModule.forRoot(),
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

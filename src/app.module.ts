@@ -10,8 +10,10 @@ import { Customer } from './models/customer.entity';
 import { Product } from './models/product.entity';
 import { Transaction } from './models/transaction.entity';
 import { ConfigModule } from '@nestjs/config';
+import { config } from 'process';
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'webapp.ckys6iuhgaoz.eu-west-1.rds.amazonaws.com',
@@ -25,7 +27,6 @@ import { ConfigModule } from '@nestjs/config';
     CatalogModule,
     CustomerModule,
     TransactionModule,
-    ConfigModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
