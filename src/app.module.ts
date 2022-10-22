@@ -10,17 +10,16 @@ import { Customer } from './models/customer.entity';
 import { Product } from './models/product.entity';
 import { Transaction } from './models/transaction.entity';
 import { ConfigModule } from '@nestjs/config';
-import { config } from 'process';
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'webapp.ckys6iuhgaoz.eu-west-1.rds.amazonaws.com',
-      port: 3306,
-      username: 'admin',
-      password: 'bOMwVJ7kVNDg3jjl',
-      database: 'webapp',
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT as unknown as number,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASWORD,
+      database: process.env.DB,
       entities: [Product, Customer, Transaction, Category],
       synchronize: true,
     }),
@@ -31,4 +30,14 @@ import { config } from 'process';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  onApplicationBootstrap() {
+    console.log(
+      process.env.DB_HOST,
+      process.env.DB_PORT,
+      process.env.DB_USERNAME,
+      process.env.DB_PASWORD,
+      process.env.DB,
+    );
+  }
+}

@@ -20,24 +20,27 @@ const product_entity_1 = require("./models/product.entity");
 const transaction_entity_1 = require("./models/transaction.entity");
 const config_1 = require("@nestjs/config");
 let AppModule = class AppModule {
+    onApplicationBootstrap() {
+        console.log(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_USERNAME, process.env.DB_PASWORD, process.env.DB);
+    }
 };
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            config_1.ConfigModule.forRoot(),
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'mysql',
-                host: 'webapp.ckys6iuhgaoz.eu-west-1.rds.amazonaws.com',
-                port: 3306,
-                username: 'admin',
-                password: 'bOMwVJ7kVNDg3jjl',
-                database: 'webapp',
+                host: process.env.DB_HOST,
+                port: process.env.DB_PORT,
+                username: process.env.DB_USERNAME,
+                password: process.env.DB_PASWORD,
+                database: process.env.DB,
                 entities: [product_entity_1.Product, customer_entity_1.Customer, transaction_entity_1.Transaction, category_entity_1.Category],
                 synchronize: true,
             }),
             catalog_module_1.CatalogModule,
             customer_module_1.CustomerModule,
             transaction_module_1.TransactionModule,
-            config_1.ConfigModule.forRoot(),
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

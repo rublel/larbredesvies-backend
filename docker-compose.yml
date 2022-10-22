@@ -1,0 +1,34 @@
+version: '3.6'
+services:
+  mysql:
+    environment:
+      - MYSQL_DATABASE=webapp
+      - MYSQL_ROOT_PASSWORD=changeme
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=changeme
+    command:
+      - --table_definition_cache=100
+      - --performance_schema=0
+      - --default-authentication-plugin=mysql_native_password
+      - --innodb_use_native_aio=0
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+    container_name: mysqldb
+    image: mysql
+
+  api:
+    build:
+      context: .
+      dockerfile: ./dev.Dockerfile
+    volumes:
+      - ./:/srv/app
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql      
+      DB_PORT: 3306
+      DB_USERNAME: dbuser
+      DB_PASWORD: changeme
+      DB: webapp
+    ports:
+      - "3000:3000"
