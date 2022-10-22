@@ -7,10 +7,10 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { Category } from 'src/models/category.entity';
-import { Product } from 'src/models/product.entity';
-import FrontEndFormatter from 'src/utils/Formatter/frontEndFormatter';
-import { Response } from 'src/utils/Formatter/response.entity';
+import { Category } from 'backend/src/models/category.entity';
+import { Product } from 'backend/src/models/product.entity';
+import FrontEndFormatter from 'backend/src/utils/Formatter/frontEndFormatter';
+import { Response } from 'backend/src/utils/Formatter/response.entity';
 import { CatalogService } from './catalog.service';
 
 @Controller('catalog')
