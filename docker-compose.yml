@@ -19,9 +19,9 @@ services:
   api:
     build:
       context: .
-      dockerfile: ./dev.Dockerfile
+      dockerfile: ./backend/dev.Dockerfile
     volumes:
-      - ./:/srv/app
+      - ./:/srv/app/backend
     depends_on:
       - mysql
     environment:
