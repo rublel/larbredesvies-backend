@@ -16,12 +16,12 @@ services:
     container_name: mysqldb
     image: mysql
 
-  api:
+  backend:
     build:
       context: .
       dockerfile: ./backend/dev.Dockerfile
     volumes:
-      - ./:/srv/app/backend
+      - ./:/srv/app
     depends_on:
       - mysql
     environment:
@@ -32,3 +32,20 @@ services:
       DB: webapp
     ports:
       - "3000:3000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/dev.Dockerfile
+    volumes:
+      - ./:/srv/app
+    depends_on:
+      - backend
+    environment:
+      DB_HOST: mysql      
+      DB_PORT: 3306
+      DB_USERNAME: dbuser
+      DB_PASWORD: changeme
+      DB: webapp
+    ports:
+      - "8080:8080"

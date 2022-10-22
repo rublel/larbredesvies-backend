@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
-import { BackendFormatter } from 'backend/src/utils/Formatter/backEndFormatter';
-import { Customer } from 'backend/src/models/customer.entity';
+import { BackendFormatter } from 'src/utils/Formatter/backEndFormatter';
+import { Customer } from 'src/models/customer.entity';
 import { Logger } from '@nestjs/common';
 import { CustomersAction } from './customers.action';
-import { Transaction } from 'backend/src/models/transaction.entity';
+import { Transaction } from 'src/models/transaction.entity';
 import { validate } from 'email-validator';
-import { Response } from 'backend/src/utils/Formatter/response.entity';
+import { Response } from 'src/utils/Formatter/response.entity';
 @Injectable()
 export class CustomerService extends CustomersAction {
   constructor(

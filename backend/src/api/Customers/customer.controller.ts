@@ -8,10 +8,10 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { Customer } from 'backend/src/models/customer.entity';
-import FrontEndFormatter from 'backend/src/utils/Formatter/frontEndFormatter';
+import { Customer } from 'src/models/customer.entity';
+import FrontEndFormatter from 'src/utils/Formatter/frontEndFormatter';
 import { CustomerService } from './customer.service';
-import { Response } from 'backend/src/utils/Formatter/response.entity';
+import { Response } from 'src/utils/Formatter/response.entity';
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}

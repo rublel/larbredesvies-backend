@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Product } from 'backend/src/models/product.entity';
-import { Category } from 'backend/src/models/category.entity';
+import { Product } from 'src/models/product.entity';
+import { Category } from 'src/models/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { BackendFormatter } from 'backend/src/utils/Formatter/backEndFormatter';
-import { Response } from 'backend/src/utils/Formatter/response.entity';
+import { BackendFormatter } from 'src/utils/Formatter/backEndFormatter';
+import { Response } from 'src/utils/Formatter/response.entity';
 
 @Injectable()
 export class CatalogService {
