@@ -30,22 +30,20 @@ services:
       DB_USERNAME: dbuser
       DB_PASWORD: changeme
       DB: webapp
+      PORTTOLISTENON: 3002
     ports:
-      - "3000:3000"
+      - "3002:3002"
 
-  # frontend:
-  #   build:
-  #     context: .
-  #     dockerfile: ./frontend/dev.Dockerfile
-  #   volumes:
-  #     - ./:/srv/app
-  #   depends_on:
-  #     - backend
-  #   environment:
-  #     DB_HOST: mysql      
-  #     DB_PORT: 3306
-  #     DB_USERNAME: dbuser
-  #     DB_PASWORD: changeme
-  #     DB: webapp
-  #   ports:
-  #     - "8080:8080"
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/dev.Dockerfile
+    volumes:
+      - ./:/srv/app
+    depends_on:
+      - backend
+    environment:
+      REACT_APP_API_URL: http://localhost:3000
+      PORT: 3001
+    ports:
+      - "3001:3001"
