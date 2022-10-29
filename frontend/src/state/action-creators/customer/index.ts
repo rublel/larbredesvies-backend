@@ -45,6 +45,8 @@ export const filterCustomers = ({
         total: 0,
       },
     });
+    console.log(process.env.REACT_APP_API_URL);
+
     const customers = await axios({
       method: "post",
       url: `${process.env.REACT_APP_API_URL}customer/search`,

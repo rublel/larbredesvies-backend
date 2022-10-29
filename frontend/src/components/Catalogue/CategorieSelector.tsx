@@ -54,47 +54,46 @@ const CategorieSelector = () => {
 
   return (
     <ListGroup as="ul" className={styles.ulHaflheight}>
-      {categories.length > 0 && (
-        <ListGroup.Item action as="li" className="text-center">
-          {showPlus ? (
-            <Row
-              className={`justify-content-center ${showPlus ? "px-0" : ""}`}
-              onClick={() => setShowPlus(!showPlus)}
-            >
-              <FontAwesomeIcon icon={faPlus} />
+      <ListGroup.Item action as="li" className="text-center">
+        {showPlus ? (
+          <Row
+            className={`justify-content-center ${showPlus ? "px-0" : ""}`}
+            onClick={() => setShowPlus(!showPlus)}
+          >
+            <FontAwesomeIcon icon={faPlus} />
+          </Row>
+        ) : (
+          <>
+            <Row>
+              <Form.Control
+                name="category"
+                type="text"
+                placeholder="Nom"
+                onInput={(e) =>
+                  setNewCategory((e.target as HTMLInputElement).value)
+                }
+                ref={category}
+              />
             </Row>
-          ) : (
-            <>
-              <Row>
-                <Form.Control
-                  name="category"
-                  type="text"
-                  placeholder="Nom"
-                  onInput={(e) =>
-                    setNewCategory((e.target as HTMLInputElement).value)
-                  }
-                  ref={category}
-                />
-              </Row>
-              <Row className="justify-content-between mt-1">
-                <Button
-                  className="col-auto"
-                  onClick={() => createCategoryEventCback()}
-                >
-                  Ajouter
-                </Button>
-                <Button
-                  className="col-auto"
-                  variant="danger"
-                  onClick={() => setShowPlus(!showPlus)}
-                >
-                  Annuler
-                </Button>
-              </Row>
-            </>
-          )}
-        </ListGroup.Item>
-      )}
+            <Row className="justify-content-between mt-1">
+              <Button
+                className="col-auto"
+                onClick={() => createCategoryEventCback()}
+              >
+                Ajouter
+              </Button>
+              <Button
+                className="col-auto"
+                variant="danger"
+                onClick={() => setShowPlus(!showPlus)}
+              >
+                Annuler
+              </Button>
+            </Row>
+          </>
+        )}
+      </ListGroup.Item>
+
       {
         // loop through categories and add a master category to check all
         categories.length > 0

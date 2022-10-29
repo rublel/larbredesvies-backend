@@ -43,7 +43,7 @@ services:
     depends_on:
       - backend
     environment:
-      REACT_APP_API_URL: http://localhost:3000
+      REACT_APP_API_URL: http://localhost:3002/
       PORT: 3001
     ports:
       - "3001:3001"

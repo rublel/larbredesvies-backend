@@ -170,6 +170,7 @@ export const updateProduct = (e: {
   }
 };
 export const createCategory = (e: string) => {
+  console.log(`${process.env.REACT_APP_API_URL}catalog/category`);
   try {
     return async (dispatch: any) => {
       const newCategory = await axios({
