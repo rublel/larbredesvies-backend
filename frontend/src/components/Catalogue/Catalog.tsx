@@ -71,14 +71,12 @@ const Catalogue = () => {
             </span>
           </Col>
           <Col md={"auto"} className="mb-3 align ms-auto">
-            {products.length > 0 && (
-              <ProductModal
-                btnVariant="primary"
-                btncontent="Ajouter un produit"
-                btnLogo={faPlus}
-                type="create"
-              />
-            )}
+            <ProductModal
+              btnVariant="primary"
+              btncontent="Ajouter un produit"
+              btnLogo={faPlus}
+              type="create"
+            />
           </Col>
         </Row>
         <Row>

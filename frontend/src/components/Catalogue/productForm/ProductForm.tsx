@@ -166,6 +166,7 @@ const ProductForm = (props: FormProps) => {
                     as="select"
                     defaultValue={product?.name}
                     onChange={newCatChecked}
+                    type="number"
                   >
                     {[...categories.filter(({ id }) => id !== "all")].map(
                       (

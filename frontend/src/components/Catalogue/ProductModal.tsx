@@ -149,7 +149,7 @@ const ProductModal = (props: productModalProps) => {
             {(() => {
               switch (props.type) {
                 case "create":
-                  return " Créer";
+                  return " Créer ";
                 case "update":
                   return "Modifier ";
                 default:
